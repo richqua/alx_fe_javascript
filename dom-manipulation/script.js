@@ -2,7 +2,7 @@ let quotes = [];
 const SERVER_URL = 'https://dummyjson.com/quotes';
 
 // Fetch quotes from mock server
-async function fetchServerQuotes() {
+async function fetchQuotesFromServer() {
   try {
     const res = await fetch(SERVER_URL);
     const data = await res.json();
