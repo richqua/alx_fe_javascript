@@ -8,12 +8,16 @@
   <body>
     <h1>Dynamic Quote Generator</h1>
     <div id="quoteDisplay"></div>
-    <button id="newQuote" style="background-color:blueviolet; color:aliceblue; border-radius:8px">Show New Quote</button>
+    <button id="newQuote" style="background-color:rgb(112, 10, 10); color:aliceblue; border-radius:8px">Show New Quote</button>
 
     <div>
         <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
         <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-        <button onclick="addQuote()">Add Quote</button>
+        <button onclick="addQuote()" style="background-color:rgb(112, 10, 10); color:aliceblue; border-radius:8px">Add Quote</button>
+    </div>
+        <div style="margin-top: 20px;">
+        <button onclick="exportToJsonFile()" style="background-color:rgb(8, 1, 15); color:aliceblue; border-radius:8px">Export Quotes</button>
+        <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
     </div>
     <script src="script.js"></script>
   </body>
