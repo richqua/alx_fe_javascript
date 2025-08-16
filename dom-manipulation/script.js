@@ -70,7 +70,7 @@ async function syncQuotes() {
       filterQuotes();       // Update displayed quotes
 
       // Notify user about the sync result
-      alert(`Quotes synced from server:\nNew quotes added: ${newAddCount}\nConflicts resolved: ${conflictCount}`);
+      alert(`Quotes synced with server!\nNew quotes added: ${newAddCount}\nConflicts resolved: ${conflictCount}`);
     }
   } catch (error) {
     console.error("Error syncing quotes:", error);
