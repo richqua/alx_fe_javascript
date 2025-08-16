@@ -38,6 +38,91 @@ async function postQuoteToServer(quote) {
   }
 }
 
+// after fetchQuotesFromServer and postQuoteToServer
+async function syncQuotes() {
+  try {
+    // Fetch quotes from server
+    const serverQuotes = await fetchQuotesFromServer();
+
+    let conflictCount = 0;
+    let newAddCount = 0;
+
+    // Check for conflicts and new quotes
+    serverQuotes.forEach(serverQuote => {
+      const existingIndex = quotes.findIndex(localQuote => localQuote.text === serverQuote.text);
+
+      if (existingIndex !== -1) {
+        // Conflict: quote exists but category differs — server wins
+        if (quotes[existingIndex].category !== serverQuote.category) {
+          quotes[existingIndex].category = serverQuote.category;
+          conflictCount++;
+        }
+      } else {
+        // New quote from server
+        quotes.push(serverQuote);
+        newAddCount++;
+      }
+    });
+
+    if (conflictCount > 0 || newAddCount > 0) {
+      saveQuotes();         // Update local storage
+      populateCategories(); // Update categories UI
+      filterQuotes();       // Update displayed quotes
+
+      // Notify user about the sync result
+      alert(`Quotes synced from server:\nNew quotes added: ${newAddCount}\nConflicts resolved: ${conflictCount}`);
+    }
+  } catch (error) {
+    console.error("Error syncing quotes:", error);
+  }
+}
+
+async function syncQuotes() {
+  try {
+    // Fetch quotes from server
+    const serverQuotes = await fetchQuotesFromServer();
+
+    let conflictCount = 0;
+    let newAddCount = 0;
+
+    // Check for conflicts and new quotes
+    serverQuotes.forEach(serverQuote => {
+      const existingIndex = quotes.findIndex(localQuote => localQuote.text === serverQuote.text);
+
+      if (existingIndex !== -1) {
+        // Conflict: quote exists but category differs — server wins
+        if (quotes[existingIndex].category !== serverQuote.category) {
+          quotes[existingIndex].category = serverQuote.category;
+          conflictCount++;
+        }
+      } else {
+        // New quote from server
+        quotes.push(serverQuote);
+        newAddCount++;
+      }
+    });
+
+    function startPeriodicSync(intervalMs = 60000) {
+  // Initial sync immediately
+  syncQuotes();
+
+  // Then sync every `intervalMs` milliseconds (default 60 seconds)
+  setInterval(syncQuotes, intervalMs);
+}
+
+    if (conflictCount > 0 || newAddCount > 0) {
+      saveQuotes();         // Update local storage
+      populateCategories(); // Update categories UI
+      filterQuotes();       // Update displayed quotes
+
+      // Notify user about the sync result
+      alert(`Quotes synced from server:\nNew quotes added: ${newAddCount}\nConflicts resolved: ${conflictCount}`);
+    }
+  } catch (error) {
+    console.error("Error syncing quotes:", error);
+  }
+}
+
 // Conflict detection and resolution (server wins)
 function resolveConflicts(serverQuotes) {
   let conflictCount = 0;
@@ -263,5 +348,5 @@ document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
   document.getElementById("newQuote").addEventListener("click", showRandomQuote);
   showLastViewedQuote();
-  startServerSync(); // Start syncing with server
+  startPeriodicSync(); //  Start syncing with the mock server every 60 seconds
 });
