@@ -15,6 +15,28 @@ async function fetchQuotesFromServer() {
     return [];
   }
 }
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quote)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Quote posted to server:", data);
+    alert("Quote successfully posted to server!");
+  } catch (error) {
+    console.error("Error posting quote to server:", error);
+    alert("Failed to post quote to server.");
+  }
+}
 
 // Conflict detection and resolution (server wins)
 function resolveConflicts(serverQuotes) {
@@ -175,27 +197,27 @@ function createAddQuoteForm() {
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
-
   const newQuoteText = textInput.value.trim();
-  const newQuoteCategory = categoryInput.value.trim();
+  const newQuoteCategory = categoryInput.value.trim() || "Uncategorized";
 
-  if (newQuoteText && newQuoteCategory) {
-    const newQuote = { text: newQuoteText, category: newQuoteCategory };
-    quotes.push(newQuote);
-    saveQuotes();
-
-    // Clear input
-    textInput.value = "";
-    categoryInput.value = "";
-
-    // Refresh categories and filtered quotes
-    populateCategories();
-    filterQuotes();
-
-    alert("Quote added successfully!");
-  } else {
-    alert("Please fill out both fields.");
+  if (newQuoteText === "") {
+    alert("Please enter a quote text.");
+    return;
   }
+
+  const newQuote = { text: newQuoteText, category: newQuoteCategory };
+
+  quotes.push(newQuote);
+  saveQuotes();
+  populateCategories();
+  filterQuotes();
+
+  // Post new quote to server
+  postQuoteToServer(newQuote);
+
+  // Clear inputs
+  textInput.value = " ";
+  categoryInput.value = " ";
 }
 
 // Export quotes to JSON
