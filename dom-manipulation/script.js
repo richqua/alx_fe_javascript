@@ -23,6 +23,21 @@ function showRandomQuote() {
   `;
 }
 
+// Function to create/initialize the Add Quote form (without replacing HTML)
+function createAddQuoteForm() {
+  const quoteInput = document.getElementById("newQuoteText");
+  const categoryInput = document.getElementById("newQuoteCategory");
+
+  // Optional enhancements like placeholder fallback or clearing on focus
+  quoteInput.addEventListener("focus", () => {
+    if (quoteInput.value === "") quoteInput.placeholder = "Enter a new quote";
+  });
+
+  categoryInput.addEventListener("focus", () => {
+    if (categoryInput.value === "") categoryInput.placeholder = "Enter quote category";
+  });
+}
+
 // Function to add a new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
@@ -46,5 +61,8 @@ function addQuote() {
   }
 }
 
-// Event listener for "Show New Quote" button
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+// Initialize on page load
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+  createAddQuoteForm(); // ✅ This ensures the function is present and executed
+});
