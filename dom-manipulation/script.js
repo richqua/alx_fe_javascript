@@ -1,5 +1,5 @@
 let quotes = [];
-const SERVER_URL = 'https://dummyjson.com/quotes';
+const SERVER_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 // Fetch quotes from mock server
 async function fetchQuotesFromServer() {
