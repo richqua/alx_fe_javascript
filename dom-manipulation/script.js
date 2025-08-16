@@ -23,12 +23,11 @@ function showRandomQuote() {
   `;
 }
 
-// Function to create/initialize the Add Quote form (without replacing HTML)
+// Function to create/initialize the Add Quote form (placeholder enhancements)
 function createAddQuoteForm() {
   const quoteInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
 
-  // Optional enhancements like placeholder fallback or clearing on focus
   quoteInput.addEventListener("focus", () => {
     if (quoteInput.value === "") quoteInput.placeholder = "Enter a new quote";
   });
@@ -47,13 +46,29 @@ function addQuote() {
   const newQuoteCategory = categoryInput.value.trim();
 
   if (newQuoteText && newQuoteCategory) {
-    quotes.push({
+    // Add to the quotes array
+    const newQuote = {
       text: newQuoteText,
       category: newQuoteCategory
-    });
+    };
+    quotes.push(newQuote);
 
+    // Clear form
     textInput.value = "";
     categoryInput.value = "";
+
+    // Update DOM with the new quote using createElement and appendChild
+    const newQuoteElement = document.createElement("div");
+    newQuoteElement.innerHTML = `
+      <p>"${newQuote.text}"</p>
+      <small>Category: <strong>${newQuote.category}</strong></small>
+    `;
+    newQuoteElement.style.marginTop = "1em";
+    newQuoteElement.style.backgroundColor = "#f0f0f0";
+    newQuoteElement.style.padding = "10px";
+    newQuoteElement.style.border = "1px solid #ccc";
+
+    document.getElementById("quoteDisplay").appendChild(newQuoteElement);
 
     alert("Quote added successfully!");
   } else {
@@ -64,5 +79,5 @@ function addQuote() {
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-  createAddQuoteForm(); // ✅ This ensures the function is present and executed
+  createAddQuoteForm(); // required per spec
 });
