@@ -1,4 +1,63 @@
 let quotes = [];
+const SERVER_URL = 'https://dummyjson.com/quotes';
+
+// Fetch quotes from mock server
+async function fetchServerQuotes() {
+  try {
+    const res = await fetch(SERVER_URL);
+    const data = await res.json();
+    return data.quotes.map(q => ({
+      text: q.quote,
+      category: q.author || "Uncategorized"
+    }));
+  } catch (error) {
+    console.error("Error fetching server quotes:", error);
+    return [];
+  }
+}
+
+// Conflict detection and resolution (server wins)
+function resolveConflicts(serverQuotes) {
+  let conflictCount = 0;
+  let newAddCount = 0;
+
+  serverQuotes.forEach(serverQuote => {
+    const existingIndex = quotes.findIndex(
+      localQuote => localQuote.text === serverQuote.text
+    );
+
+    if (existingIndex !== -1) {
+      const localQuote = quotes[existingIndex];
+      if (localQuote.category !== serverQuote.category) {
+        quotes[existingIndex].category = serverQuote.category; // Server wins
+        conflictCount++;
+      }
+    } else {
+      quotes.push(serverQuote);
+      newAddCount++;
+    }
+  });
+
+  if (conflictCount > 0 || newAddCount > 0) {
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+
+    alert(`Data synced with server.\nNew quotes: ${newAddCount}\nConflicts resolved: ${conflictCount}`);
+  }
+}
+
+// Triggers periodic syncing
+function startServerSync() {
+  syncWithServer(); // Initial sync
+  setInterval(syncWithServer, 60 * 1000);
+}
+
+// Main sync function
+async function syncWithServer() {
+  const serverQuotes = await fetchServerQuotes();
+  resolveConflicts(serverQuotes);
+}
 
 // Load quotes from localStorage on startup
 function loadQuotes() {
@@ -182,4 +241,5 @@ document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
   document.getElementById("newQuote").addEventListener("click", showRandomQuote);
   showLastViewedQuote();
+  startServerSync(); // Start syncing with server
 });
