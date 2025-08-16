@@ -8,15 +8,19 @@ const quotes = [
 // Function to show a random quote
 function showRandomQuote() {
   const quoteDisplay = document.getElementById("quoteDisplay");
+  
   if (quotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available. Please add one!";
+    quoteDisplay.innerHTML = "<em>No quotes available. Please add one!</em>";
     return;
   }
 
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
 
-  quoteDisplay.textContent = `"${quote.text}" — [${quote.category}]`;
+  quoteDisplay.innerHTML = `
+    <p>"${quote.text}"</p>
+    <small>Category: <strong>${quote.category}</strong></small>
+  `;
 }
 
 // Function to add a new quote
